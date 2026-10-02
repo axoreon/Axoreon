@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exorian - ComplianceGPT for DPDP Act</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --putty: #E5DCC8;
+    --pine: #27412F;
+    --sage: #8b9484;
+    --stage-bg: #27412F;
+    --reveal-duration: .56s;
+    --reveal-ease: cubic-bezier(.16,1,.3,1);
+    --reveal-distance: 34px;
+    --reveal-stagger: 78ms;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--stage-bg);
+    overflow: hidden;
+    font-family: 'Instrument Sans', sans-serif;
+    color: var(--pine);
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage-wrapper {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .deck-stage {
+    width: 1920px;
+    height: 1080px;
+    background-color: var(--putty);
+    position: relative;
+    overflow: hidden;
+    transform-origin: 0 0;
+  }
+  .bebas { font-family: 'Bebas Neue', sans-serif; }
+  .uppercase { text-transform: uppercase; }
+  
+  .slide {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: none;
+  }
+  .slide.active { display: block; }
+  
+  /* Furniture */
+  .corner-label {
+    position: absolute;
+    font-size: 18px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 100;
+  }
+  .cl-tl { top: 40px; left: 86px; }
+  .cl-tr { top: 40px; right: 86px; }
+  .cl-bl { bottom: 40px; left: 86px; }
+  .cl-br { bottom: 40px; right: 86px; text-align: right; }
+  
+  .slide .corner-label { color: var(--pine); }
+  .slide[data-ink="inverted"] .corner-label,
+  .band .corner-label { color: var(--putty); }
+  
+  /* Hairlines */
+  .hairline {
+    height: 1px;
+    background-color: var(--pine);
+    opacity: 0.3;
+  }
+  .slide[data-ink="inverted"] .hairline,
+  .band .hairline {
+    background-color: var(--putty);
+  }
+
+  /* Reveal Choreography */
+  .reveal {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+  .slide.active .reveal {
+    animation: slideUp var(--reveal-duration) var(--reveal-ease) forwards;
+    animation-delay: calc(var(--i) * var(--reveal-stagger));
+  }
+  @keyframes slideUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Layout: Cover */
+  .cover .band {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 648px;
+    background-color: var(--pine);
+    color: var(--putty);
+    padding: 140px 86px 0;
+  }
+  .cover .kicker { font-size: 19px; text-transform: uppercase; margin-bottom: 24px; }
+  .cover .standfirst { font-size: 27px; line-height: 1.5; max-width: 700px; }
+  .cover .hero-word {
+    position: absolute;
+    bottom: -92px; left: 86px;
+    font-size: 392px; /* 7 chars EXORIAN */
+    line-height: 1;
+    color: var(--pine);
+  }
+  .cover .circle-seal {
+    position: absolute;
+    bottom: 86px; right: 86px;
+    width: 196px; height: 196px;
+    border: 1px solid rgba(39, 65, 47, 0.3);
+    border-radius: 50%;
+  }
+  .cover .svg-ill {
+    position: absolute;
+    top: 180px; right: 180px;
+    width: 300px; height: 300px;
+  }
+
+  /* Layout: Quote */
+  .quote-layout { padding: 300px 86px; position: relative; }
+  .quote-layout .hairline-short { width: 100px; margin-bottom: 60px; }
+  .quote-layout .quote-text {
+    font-size: 64px; line-height: 1.35; max-width: 1150px;
+    margin-bottom: 60px;
+  }
+  .quote-layout .quote-name { font-size: 30px; font-weight: 600; }
+  .quote-layout .quote-bio { font-size: 21px; line-height: 1.5; }
+  .quote-layout .date-stamp {
+    position: absolute;
+    top: 300px; right: 86px;
+    font-size: 196px;
+    color: var(--sage);
+    opacity: 0.22;
+    text-align: right;
+    line-height: 0.8;
+  }
+
+  /* Layout: Statement Stat */
+  .statement-stat .left-col {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 560px;
+    background-color: var(--pine);
+    color: var(--putty);
+    padding: 140px 86px;
+  }
+  .statement-stat .method-note {
+    font-size: 23px; line-height: 1.55; opacity: 0.7;
+    margin-top: 160px;
+  }
+  .statement-stat .right-col {
+    margin-left: 560px;
+    padding: 340px 86px 0 86px;
+  }
+  .statement-stat .kicker { font-size: 19px; text-transform: uppercase; margin-bottom: 40px; }
+  .statement-stat .figure { font-size: 380px; line-height: 1; margin-bottom: -40px; }
+  .statement-stat .hairline-full { width: 100%; margin: 60px 0; }
+  .statement-stat .sentence { font-size: 34px; line-height: 1.45; max-width: 900px; }
+
+  /* Layout: List */
+  .list-layout .top-rule {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 148px;
+    background-color: var(--pine);
+    color: var(--putty);
+  }
+  .list-layout .content { padding: 220px 86px 0; }
+  .list-layout .head { font-size: 132px; line-height: 1; margin-bottom: 20px; }
+  .list-layout .standfirst { font-size: 30px; line-height: 1.5; margin-bottom: 80px; max-width: 900px; }
+  .list-layout .list-row {
+    display: flex;
+    align-items: center;
+    min-height: 120px;
+    border-top: 1px solid rgba(39, 65, 47, 0.3);
+  }
+  .list-layout .list-row:last-child {
+    border-bottom: 1px solid rgba(39, 65, 47, 0.3);
+  }
+  .list-layout .list-ordinal { font-size: 74px; color: var(--sage); width: 150px; line-height: 1; }
+  .list-layout .list-name { font-size: 40px; font-weight: 600; width: 400px; }
+  .list-layout .list-note { font-size: 21px; line-height: 1.4; flex: 1; }
+
+  /* Layout: Section Break */
+  .section-break {
+    background-color: var(--pine);
+    color: var(--putty);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .section-break .ordinal { font-size: 112px; opacity: 0.34; line-height: 1; margin-bottom: 20px; }
+  .section-break .word { font-size: 280px; line-height: 1; }
+
+  /* Layout: Closer */
+  .closer {
+    background-color: var(--pine);
+    color: var(--putty);
+    padding: 0 86px;
+    height: 100%;
+    position: relative;
+  }
+  .closer .closing-word {
+    position: absolute;
+    top: -64px; left: 86px; /* Sliced from above */
+    font-size: 240px; /* Adjusted for 10 chars "COMPLIANCE" */
+    line-height: 1;
+  }
+  .closer .bottom-content {
+    position: absolute;
+    bottom: 140px; left: 86px; right: 86px;
+    display: flex;
+    flex-direction: column;
+  }
+  .closer .forward-para {
+    font-size: 29px; line-height: 1.56; max-width: 800px;
+    margin-bottom: 80px;
+  }
+  .closer .stamp {
+    position: absolute;
+    bottom: 140px; right: 86px;
+    font-size: 112px; opacity: 0.34;
+  }
+  .closer .hairline-short { width: 100px; margin-bottom: 40px; background-color: var(--putty); }
+  .closer .colophon { font-size: 20px; line-height: 1.6; max-width: 600px; }
+  .closer a.cta-button {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 24px;
+    padding: 16px 32px;
+    background-color: var(--putty);
+    color: var(--pine);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .closer a.cta-button:hover {
+    background-color: var(--sage);
+    color: var(--putty);
+  }
+
+  @media print {
+    .stage-wrapper { position: static; display: block; }
+    .deck-stage { transform: none !important; width: 100%; height: auto; margin:0; }
+    .slide { position: relative; display: block; page-break-after: always; height: 1080px; }
+    .reveal { opacity: 1; transform: none; animation: none !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { transition: opacity 0.3s; }
+    .slide.active .reveal { opacity: 1; transform: none; animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage-wrapper">
+  <div class="deck-stage" id="stage">
+    
+    <!-- SLIDE 1: COVER -->
+    <div class="slide cover active">
+      <div class="band">
+        <div class="corner-label cl-tl uppercase reveal" style="--i:8">DPDP ACT</div>
+        <div class="corner-label cl-tr uppercase reveal" style="--i:8">COMPLIANCEGPT</div>
+        
+        <svg class="svg-ill reveal" style="--i:4" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="25" y="25" width="50" height="50" stroke="#E5DCC8" stroke-width="2"/>
+          <path d="M40 50 L48 58 L62 42" stroke="#E5DCC8" stroke-width="3" stroke-linecap="square"/>
+          <path d="M25 40 L15 40 M25 60 L15 60 M75 40 L85 40 M75 60 L85 60" stroke="#E5DCC8" stroke-width="2"/>
+          <path d="M40 25 L40 15 M60 25 L60 15 M40 75 L40 85 M60 75 L60 85" stroke="#E5DCC8" stroke-width="2"/>
+        </svg>
+
+        <div class="kicker reveal" style="--i:1">COMPLIANCEGPT</div>
+        <div class="standfirst reveal" style="--i:2">Turning data privacy from a complex obligation into an automated, affordable, and trusted business process for every SME in India.</div>
+      </div>
+      
+      <div class="hero-word bebas reveal" style="--i:0">EXORIAN</div>
+      <div class="circle-seal reveal" style="--i:6"></div>
+      
+      <div class="corner-label cl-bl uppercase reveal" style="--i:8">2026</div>
+      <div class="corner-label cl-br uppercase reveal page-counter" style="--i:8">01</div>
+    </div>
+
+    <!-- SLIDE 2: QUOTE -->
+    <div class="slide quote-layout">
+      <div class="corner-label cl-tl uppercase reveal" style="--i:8">THE REALITY</div>
+      
+      <div class="hairline hairline-short reveal" style="--i:1"></div>
+      <div class="quote-text reveal" style="--i:2">"Imagine a clinic in Aniwal. It collects patient data daily, but may not know where it is stored, who can access it, or if a valid consent was recorded."</div>
+      <div class="quote-name reveal" style="--i:3">The Compliance Challenge</div>
+      <div class="quote-bio reveal" style="--i:4">India's digital personal data protection framework is changing.</div>
+      
+      <div class="date-stamp bebas reveal" style="--i:5">DATA<br>RISK</div>
+      
+      <div class="corner-label cl-bl uppercase reveal" style="--i:8">DPDP ACT</div>
+      <div class="corner-label cl-br uppercase reveal page-counter" style="--i:8">02</div>
+    </div>
+
+    <!-- SLIDE 3: STATEMENT STAT -->
+    <div class="slide statement-stat">
+      <div class="left-col band">
+        <div class="corner-label cl-tl uppercase reveal" style="--i:8">THE PROBLEM</div>
+        <div class="corner-label cl-bl uppercase reveal" style="--i:8">EXORIAN</div>
+        <div class="method-note reveal" style="--i:5">Most SMEs do not have a dedicated privacy officer, legal team, or affordable compliance technology. They rely on manual processes.</div>
+      </div>
+      
+      <div class="right-col">
+        <div class="corner-label cl-tr uppercase reveal" style="--i:8">COMPLIANCEGPT</div>
+        <div class="kicker reveal" style="--i:1">THE COMPLIANCE GAP</div>
+        <div class="figure bebas reveal" style="--i:2">ZERO</div>
+        <div class="hairline hairline-full reveal" style="--i:3"></div>
+        <div class="sentence reveal" style="--i:4">dedicated privacy officers for most SMEs, leaving them to manage consent, data rights, and security incidents through spreadsheets and emails.</div>
+      </div>
+      
+      <div class="corner-label cl-br uppercase reveal page-counter" style="--i:8">03</div>
+    </div>
+
+    <!-- SLIDE 4: LIST -->
+    <div class="slide list-layout">
+      <div class="top-rule band">
+        <div class="corner-label cl-tl uppercase reveal" style="--i:8">THE SOLUTION</div>
+        <div class="corner-label cl-tr uppercase reveal" style="--i:8">COMPLIANCEGPT</div>
+      </div>
+      
+      <div class="content">
+        <div class="head bebas reveal" style="--i:1">CORE FEATURES</div>
+        <div class="standfirst reveal" style="--i:2">Through APIs, SDKs, widgets and centralized dashboards, businesses can seamlessly integrate privacy into their workflows.</div>
+        
+        <div class="list-row reveal" style="--i:3">
+          <div class="list-ordinal bebas">01</div>
+          <div class="list-name">CONSENT MGMT</div>
+          <div class="list-note">Manage consent, verify age, and enable consent revocation seamlessly for all users.</div>
+        </div>
+        <div class="list-row reveal" style="--i:4">
+          <div class="list-ordinal bebas">02</div>
+          <div class="list-name">DATA MAPPING</div>
+          <div class="list-note">Track where personal data is stored, how it is processed, and map data flows effectively.</div>
+        </div>
+        <div class="list-row reveal" style="--i:5">
+          <div class="list-ordinal bebas">03</div>
+          <div class="list-name">MONITORING</div>
+          <div class="list-note">Monitor access activities, detect unusual behavior, and manage security incidents.</div>
+        </div>
+        <div class="list-row reveal" style="--i:6">
+          <div class="list-ordinal bebas">04</div>
+          <div class="list-name">AUDIT EVIDENCE</div>
+          <div class="list-note">Maintain a reliable audit evidence log in a centralized dashboard for compliance checks.</div>
+        </div>
+      </div>
+      
+      <div class="corner-label cl-bl uppercase reveal" style="--i:8">EXORIAN</div>
+      <div class="corner-label cl-br uppercase reveal page-counter" style="--i:8">04</div>
+    </div>
+
+    <!-- SLIDE 5: QUOTE -->
+    <div class="slide quote-layout">
+      <div class="corner-label cl-tl uppercase reveal" style="--i:8">THE VISION</div>
+      
+      <div class="hairline hairline-short reveal" style="--i:1"></div>
+      <div class="quote-text reveal" style="--i:2">"Compliance is not an isolated legal activity. It is a connected business process involving people, technology, data, risk, and accountability."</div>
+      <div class="quote-name reveal" style="--i:3">Founder, Exorian</div>
+      <div class="quote-bio reveal" style="--i:4">Certified DPO & Lead Auditor (Privacy, ISMS, QMS, ITS)</div>
+      
+      <div class="date-stamp bebas reveal" style="--i:5">VISION<br>2026</div>
+      
+      <div class="corner-label cl-bl uppercase reveal" style="--i:8">COMPLIANCEGPT</div>
+      <div class="corner-label cl-br uppercase reveal page-counter" style="--i:8">05</div>
+    </div>
+
+    <!-- SLIDE 6: SECTION BREAK -->
+    <div class="slide section-break" data-ink="inverted">
+      <div class="corner-label cl-tl uppercase reveal" style="--i:8">THE INFRASTRUCTURE</div>
+      <div class="corner-label cl-tr uppercase reveal" style="--i:8">EXORIAN</div>
+      
+      <div class="ordinal bebas reveal" style="--i:1">06</div>
+      <div class="word bebas reveal" style="--i:2">TRUST</div>
+      
+      <div class="corner-label cl-bl uppercase reveal" style="--i:8">DPDP ACT</div>
+      <div class="corner-label cl-br uppercase reveal page-counter" style="--i:8">06</div>
+    </div>
+
+    <!-- SLIDE 7: CLOSER -->
+    <div class="slide closer" data-ink="inverted">
+      <div class="corner-label cl-tl uppercase reveal" style="--i:8">GET STARTED</div>
+      <div class="corner-label cl-tr uppercase reveal" style="--i:8">COMPLIANCEGPT</div>
+      
+      <div class="closing-word bebas reveal" style="--i:0">COMPLIANCE</div>
+      
+      <div class="bottom-content">
+        <div class="forward-para reveal" style="--i:2">Privacy compliance should not be available only to large enterprises. We are building the trust infrastructure for India's digital economy so businesses can grow confidently and customers can control their data.</div>
+        
+        <div class="hairline hairline-short reveal" style="--i:3"></div>
+        <div class="colophon reveal" style="--i:4">
+          Does not replace professional legal judgment—it makes that judgment easier to implement, monitor, and prove.<br>
+          <a href="https://wa.link/mszc9k" target="_blank" class="cta-button">CHAT ON WHATSAPP &rarr;</a>
+        </div>
+      </div>
+      
+      <div class="stamp bebas reveal" style="--i:1">DPDP READY</div>
+      
+      <div class="corner-label cl-bl uppercase reveal" style="--i:8">EXORIAN</div>
+      <div class="corner-label cl-br uppercase reveal page-counter" style="--i:8">07</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  let slides = document.querySelectorAll('.slide');
+  let currentSlide = 0;
+  let isAnimating = false;
+
+  function resizeStage() {
+    const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    // Use top-left transform origin and calculate translation to center
+    const scaledWidth = 1920 * scale;
+    const scaledHeight = 1080 * scale;
+    const translateX = (window.innerWidth - scaledWidth) / 2;
+    const translateY = (window.innerHeight - scaledHeight) / 2;
+    stage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+  }
+  window.addEventListener('resize', resizeStage);
+  resizeStage();
+
+  function goToSlide(n) {
+    if (isAnimating || n === currentSlide) return;
+    isAnimating = true;
+    
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (n + slides.length) % slides.length;
+    
+    // Force reflow to reset CSS animations
+    const newSlide = slides[currentSlide].cloneNode(true);
+    slides[currentSlide].parentNode.replaceChild(newSlide, slides[currentSlide]);
+    slides = document.querySelectorAll('.slide');
+    
+    slides[currentSlide].classList.add('active');
+    
+    // Unlock after animation duration
+    setTimeout(() => { isAnimating = false; }, 800);
+  }
+
+  function nextSlide() { if(currentSlide < slides.length - 1) goToSlide(currentSlide + 1); }
+  function prevSlide() { if(currentSlide > 0) goToSlide(currentSlide - 1); }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); nextSlide(); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); prevSlide(); }
+    if (e.key === 'Home') { e.preventDefault(); goToSlide(0); }
+    if (e.key === 'End') { e.preventDefault(); goToSlide(slides.length - 1); }
+  });
+
+  // Click navigation (Right 2/3 for next, Left 1/3 for prev)
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return; // Do not intercept links
+    if (e.clientX > window.innerWidth / 3) nextSlide();
+    else prevSlide();
+  });
+
+  // Touch swipe navigation
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e => {
+    const touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 40) nextSlide();
+    if (touchEndX - touchStartX > 40) prevSlide();
+  });
+
+  // Wheel navigation (throttled)
+  let wheelTimeout;
+  document.addEventListener('wheel', e => {
+    if (wheelTimeout) return;
+    if (e.deltaY > 0) nextSlide();
+    else prevSlide();
+    wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 1000);
+  });
+</script>
+</body>
+</html>
