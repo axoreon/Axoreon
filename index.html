@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axoreon | Trust Infrastructure for India's Digital Economy</title>
+  <meta name="description" content="Axoreon provides practical, automated privacy management systems and ComplianceGPT for Indian SMEs navigating the DPDP Act.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Reset and Variables */
+    :root {
+      --bg-dark: #0f1115;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --primary: #4ade80; /* vibrant green */
+      --primary-glow: rgba(74, 222, 128, 0.3);
+      --secondary: #38bdf8; /* vibrant blue */
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    
+    /* Typography */
+    h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; }
+    h1 { font-size: 4.5rem; font-weight: 800; letter-spacing: -0.02em; }
+    h2 { font-size: 3rem; font-weight: 800; }
+    h3 { font-size: 1.5rem; font-weight: 600; }
+    p { font-size: 1.125rem; color: var(--text-muted); }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    section { padding: 8rem 0; position: relative; }
+    
+    /* Utilities */
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 1rem 2rem; border-radius: 9999px; font-weight: 600; font-family: var(--font-display);
+      text-decoration: none; transition: all 0.3s ease; cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #22c55e);
+      color: #000;
+      box-shadow: 0 10px 25px -5px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px -5px var(--primary-glow);
+    }
+    
+    /* Glassmorphism */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 3rem;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Background Effects */
+    .blob {
+      position: absolute; filter: blur(90px); z-index: -1; opacity: 0.5;
+      border-radius: 50%; animation: float 10s infinite ease-in-out alternate;
+    }
+    .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: rgba(74, 222, 128, 0.15); }
+    .blob-2 { bottom: -10%; right: -10%; width: 600px; height: 600px; background: rgba(56, 189, 248, 0.15); }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    /* Navbar */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(15, 17, 21, 0.8); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+    .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: #fff; text-decoration: none; letter-spacing: 1px; }
+
+    /* Hero Section */
+    .hero { min-height: 100vh; display: flex; align-items: center; text-align: center; padding-top: 100px; }
+    .hero h1 { margin-bottom: 1.5rem; }
+    .hero p { max-width: 700px; margin: 0 auto 3rem auto; font-size: 1.25rem; }
+
+    /* Features Section */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 4rem; }
+    .feature-icon { width: 60px; height: 60px; border-radius: 16px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: var(--primary); }
+    .feature-icon svg { width: 32px; height: 32px; }
+
+    /* Stats/Problem Section */
+    .split-section { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .stat-box { font-family: var(--font-display); font-size: 8rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 1rem; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--border-color); padding: 4rem 0; text-align: center; color: var(--text-muted); }
+
+    /* Scroll Animations */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+      .split-section { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-container">
+      <a href="#" class="logo">AXOREON</a>
+      <a href="https://wa.link/mszc9k" target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Chat with us</a>
+    </div>
+  </nav>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container reveal">
+      <h1>Building the <span class="text-gradient">Trust Infrastructure</span><br>for India's Digital Economy</h1>
+      <p>Turning DPDP Act compliance from a complex obligation into an automated, affordable, and practical business process for every SME.</p>
+      <a href="https://wa.link/mszc9k" target="_blank" class="btn btn-primary" style="font-size: 1.125rem; padding: 1.25rem 2.5rem;">Start Your Compliance Journey</a>
+    </div>
+  </section>
+
+  <!-- THE REALITY -->
+  <section>
+    <div class="container split-section reveal">
+      <div>
+        <h2>The Reality for<br>Indian SMEs</h2>
+        <p style="margin-top: 1.5rem;">Imagine a small healthcare clinic. It collects a patient's name, phone number, and identity documents daily. But it may not know where this data is stored, who can access it, or if a valid consent was recorded.</p>
+        <p style="margin-top: 1rem;">India's digital personal data protection (DPDP) framework is changing the way organizations handle data. Yet, most SMEs do not have a dedicated privacy officer or legal team.</p>
+      </div>
+      <div class="glass-card">
+        <div class="stat-box">ZERO</div>
+        <h3>Dedicated privacy officers in most SMEs.</h3>
+        <p style="margin-top: 1rem;">Businesses are expected to manage consent, data rights, and security incidents through spreadsheets, emails, or manual processes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPLIANCEGPT -->
+  <section style="background: rgba(255,255,255,0.01); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container reveal">
+      <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+        <h2 style="font-size: 1.25rem; letter-spacing: 2px; text-transform: uppercase; color: var(--primary);">Meet our Flagship SaaS</h2>
+        <h2 style="margin-top: 1rem; font-size: 3.5rem;">ComplianceGPT</h2>
+        <p style="margin-top: 1rem;">Through APIs, SDKs, widgets, and centralized dashboards, businesses can move from manual fragmentation to a structured privacy management system.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="glass-card reveal">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3>Consent Management</h3>
+          <p style="margin-top: 1rem;">Manage consent, verify age, and enable seamless consent revocation across all your digital touchpoints.</p>
+        </div>
+        <div class="glass-card reveal">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+          </div>
+          <h3>Data Mapping</h3>
+          <p style="margin-top: 1rem;">Automatically track where personal data is stored, who can access it, and map out your data flows.</p>
+        </div>
+        <div class="glass-card reveal">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
+          <h3>Activity Monitoring</h3>
+          <p style="margin-top: 1rem;">Monitor access activities in real-time, detect unusual behavior, and respond to potential incidents instantly.</p>
+        </div>
+        <div class="glass-card reveal">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <h3>Audit Readiness</h3>
+          <p style="margin-top: 1rem;">Maintain a reliable, tamper-proof audit evidence log directly in your centralized dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISION & FOUNDER -->
+  <section>
+    <div class="container reveal">
+      <div class="glass-card" style="text-align: center; padding: 6rem 2rem;">
+        <svg style="width: 48px; height: 48px; color: var(--primary); margin: 0 auto 2rem auto; opacity: 0.5;" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.714 4.148-7.79 7.983-8.609l-1.928 2.016c-3.111 1.258-5.344 3.791-5.344 6.549v7.435h-6.711zM3.017 21v-7.391c0-5.714 4.148-7.79 7.983-8.609l-1.928 2.016c-3.111 1.258-5.344 3.791-5.344 6.549v7.435h-6.711z"></path></svg>
+        <h2 style="font-weight: 400; max-width: 900px; margin: 0 auto; line-height: 1.4; font-size: 2.25rem;">"Compliance is not an isolated legal activity. It is a connected business process involving people, technology, data, risk, and accountability."</h2>
+        <div style="margin-top: 2.5rem;">
+          <h3 style="color: #fff;">Founder, Axoreon</h3>
+          <p style="font-size: 1rem; margin-top: 0.5rem;">Certified DPO & Lead Auditor (Privacy, ISMS, QMS, ITS)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="text-align: center; padding-bottom: 10rem;">
+    <div class="container reveal">
+      <h2 style="font-size: 3.5rem;">Privacy compliance should not<br>be an enterprise luxury.</h2>
+      <p style="margin: 1.5rem auto 3rem auto; max-width: 600px;">Axoreon does not replace professional legal judgment—we make that judgment easier to implement, monitor, and prove. Start building confidence today.</p>
+      <a href="https://wa.link/mszc9k" target="_blank" class="btn btn-primary" style="font-size: 1.25rem; padding: 1.25rem 3rem;">Connect on WhatsApp</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Axoreon. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll Reveal Animation
+    function reveal() {
+      var reveals = document.querySelectorAll(".reveal");
+      for (var i = 0; i < reveals.length; i++) {
+        var windowHeight = window.innerHeight;
+        var elementTop = reveals[i].getBoundingClientRect().top;
+        var elementVisible = 100;
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add("active");
+        }
+      }
+    }
+    window.addEventListener("scroll", reveal);
+    reveal(); // trigger on load
+  </script>
+</body>
+</html>
